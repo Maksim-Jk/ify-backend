@@ -1,15 +1,34 @@
 version: '3.8'
 
 services:
+  main:
+    container_name: main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .production.env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5000:5000"
+      - "9229:9229"
+    command: pnpm start
+    depends_on:
+      - db
+    restart: always
   db:
     container_name: postgres-ify
     image: postgres:16
+    env_file:
+      - .production.env
     restart: always
     environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      PG_DATA: /var/lib/postgresql/data
     volumes:
-      - ./pgdata:/var/lib/postgres/data
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - "5432:5432"
+volumes:
+  pgdata:
