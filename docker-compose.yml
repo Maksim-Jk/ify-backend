@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgres-ify
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./pgdata:/var/lib/postgres/data
+    ports:
+      - ${DB_PORT}:${DB_PORT}
