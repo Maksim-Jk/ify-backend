@@ -1,20 +1,10 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Post, Res } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Token, User } from '../user/entities'
 import { RegisterDto } from './dto'
 import { Cookies, Public, UserAgent } from '@app/common/decorators'
 import { Response } from 'express'
-import { AuthGuard } from '@app/common/guards'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -39,6 +29,8 @@ export class AuthController {
     return this.authService.register(dto)
   }
 
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: 200, description: 'Refresh token success.' })
   @Public()
   @Get('refresh-token')
   async refreshTokens(@Res() res: Response, @Cookies('refreshToken') token: Token) {
@@ -50,6 +42,8 @@ export class AuthController {
     res.status(200).json({ message: 'refresh token success.' })
   }
 
+  @ApiOperation({ summary: 'Logout' })
+  @ApiResponse({ status: 200, description: 'Logout success.' })
   @Get('logout')
   logout(@Res() res: Response) {
     res.clearCookie('refreshToken')
