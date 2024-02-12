@@ -2,13 +2,16 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserModule } from './user/user.module'
+import { AuthModule } from './auth/auth.module'
 import * as process from 'process'
+import { AuthGuard } from '@app/common/guards'
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-    envFilePath: `.${process.env.NODE_ENV}.env`,
-  }),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.${process.env.NODE_ENV}.env`,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,9 +27,10 @@ import * as process from 'process'
         autoLoadEntities: true,
       }),
     }),
-    UserModule],
+    UserModule,
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}
