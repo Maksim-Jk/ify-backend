@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service'
 import { RegisterDto } from './dto'
 import { compareSync } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
-import { Token, User } from '../user/entities'
+import { Token } from '../user/entities'
 import { v4 } from 'uuid'
 import { add } from 'date-fns/add'
 
@@ -14,8 +14,6 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name)
 
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     private readonly userService: UserService,
@@ -31,26 +29,25 @@ export class AuthService {
 
   public async login(dto: RegisterDto, userAgent: string) {
     const user = await this.userService.findByIdOrEmail(dto.email, true)
+
     if (!user || !compareSync(dto.password, user.password)) {
       throw new UnauthorizedException('The email or password is incorrect.')
     }
-    return this.getNewTokens(user, userAgent)
+    return this.getNewTokens(user.id, userAgent)
   }
 
   public async refreshTokens(refreshToken: Token) {
-    if (refreshToken.expiresAt < new Date()) {
+    if (!refreshToken || refreshToken.expiresAt < new Date()) {
       throw new BadRequestException('Refresh token expired')
     }
 
-    const user = await this.userService.findByIdOrEmail(refreshToken.userId)
-    return this.getNewTokens(user, refreshToken.userAgent)
+    const { id } = await this.userService.findByIdOrEmail(refreshToken.userId)
+    return this.getNewTokens(id, refreshToken.userAgent)
   }
 
-  private async getNewTokens(user: User, userAgent: string) {
-    const accessToken = this.jwtService.sign({
-      id: user.id,
-    })
-    const refreshToken = await this.saveOrUpdateRefreshToken(user.id, userAgent)
+  public async getNewTokens(id: string, userAgent: string) {
+    const accessToken = this.jwtService.sign({ id })
+    const refreshToken = await this.saveOrUpdateRefreshToken(id, userAgent)
     return { accessToken, refreshToken }
   }
 

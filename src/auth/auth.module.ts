@@ -5,9 +5,10 @@ import { UserModule } from '../user/user.module'
 import { JwtModule } from '@nestjs/jwt'
 import { options } from './config'
 import { AuthGuard } from '@app/common/guards'
+import { EmailModule } from '../email/email.module'
 
 @Module({
-  imports: [UserModule, JwtModule.registerAsync(options())],
+  imports: [UserModule, EmailModule, JwtModule.registerAsync(options())],
   controllers: [AuthController],
   providers: [
     AuthService,

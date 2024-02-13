@@ -32,8 +32,8 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { [key]: idOrEmail },
       select: seePassword
-        ? ['id', 'email', 'verified', 'password', 'createdAt', 'updatedAt']
-        : ['id', 'email', 'verified', 'createdAt', 'updatedAt'],
+        ? ['id', 'email', 'password', 'createdAt', 'updatedAt']
+        : ['id', 'email', 'createdAt', 'updatedAt'],
     })
 
     if (!user) {
