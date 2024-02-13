@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service'
 import { RegisterDto } from './dto'
 import { compareSync } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
-import { Token, User, VerifiedUser } from '../user/entities'
+import { Token } from '../user/entities'
 import { v4 } from 'uuid'
 import { add } from 'date-fns/add'
 

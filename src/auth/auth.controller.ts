@@ -66,6 +66,8 @@ export class AuthController {
     res.status(200).json({ message: 'logout success.' })
   }
 
+  @ApiOperation({ summary: 'Verify code' })
+  @ApiResponse({ status: 200, description: 'Verify code success.' })
   @Public()
   @Post('verify')
   async verifyCode(
@@ -86,6 +88,8 @@ export class AuthController {
     return res.status(200).json({ message: 'verify success.' })
   }
 
+  @ApiOperation({ summary: 'Send verify code' })
+  @ApiResponse({ status: 200, description: 'Send verify code success.' })
   @Public()
   @Get('send-verify/:email')
   async sendVerify(@Param('email') email: string) {

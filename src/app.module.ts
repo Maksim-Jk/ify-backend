@@ -4,8 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import * as process from 'process'
-import { AuthGuard } from '@app/common/guards'
-import { EmailModule } from './email/email.module';
+import { EmailModule } from './email/email.module'
 
 @Module({
   imports: [
